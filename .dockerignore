@@ -1,0 +1,12 @@
+# Dev
+.env
+
+# Repo
+.github/
+LICENSE
+README.md
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore

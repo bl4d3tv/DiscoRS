@@ -1,0 +1,57 @@
+[package]
+name = "disco-rs"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+authors = [
+    "bl4d3tv"
+]
+repository = "https://github.com/bl4d3tv/DiscoRS"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Async
+tokio = {version = "1", features = ["rt-multi-thread", "macros", "signal"]}
+
+# Framework
+poise = "0.5"
+
+# Env
+dotenvy = "0.15"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Tiempo
+chrono = "0.4"
+
+# Web
+serde = "1"
+serde_json = "1"
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+
+# Regex
+regex = "1"
+
+# Spotify API
+rspotify = "0.11"
+
+# Discord API
+[dependencies.serenity]
+version = "0.11"
+default-features = false
+features = ["builder", "client", "gateway", "model", "utils", "collector", "rustls_backend"]
+
+[dependencies.songbird]
+version = "0.3"
+features = ["serenity-rustls", "builtin-queue"]
+
+[build-dependencies]
+vergen = "7"
+anyhow = "1"
+
+[profile.release]
+strip = true
+lto = true
