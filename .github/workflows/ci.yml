@@ -2,6 +2,13 @@ name: "Continuous Integration"
 
 on:
   push:
+    paths-ignore:
+      - ".github/**"
+      - "README.md"
+      - "LICENSE"
+      - ".gitignore"
+      - "Dockerfile"
+      - ".dockerignore"
     branches:
       - main
   pull_request:
