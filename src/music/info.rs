@@ -16,6 +16,7 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
             e.title("DiscoRS 🦀")
                 .thumbnail(ctx.serenity_context().cache.current_user().face())
                 .color(Color::ORANGE)
+                .url("https://github.com/bl4d3tv/DiscoRS")
                 .footer(|f| f.text("Desarrollado con ❤️ por BL4D3").icon_url(footer_icon))
                 .field("Versión", version.to_string(), false)
                 .field("Hash de confirmación", git_hash.to_string(), false)
