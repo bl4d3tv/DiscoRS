@@ -46,7 +46,7 @@ features = ["builder", "client", "gateway", "model", "utils", "collector", "rust
 
 [dependencies.songbird]
 version = "0.3"
-features = ["serenity-rustls", "builtin-queue"]
+features = ["serenity-rustls", "builtin-queue", "yt-dlp"]
 
 [build-dependencies]
 vergen = "7"

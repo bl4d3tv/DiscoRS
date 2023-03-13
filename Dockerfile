@@ -37,7 +37,7 @@ RUN apt update \
     openssl \
     wget
 
-RUN pip3 install youtube_dl
+RUN pip3 install yt-dlp
 
 # Install missing libssl1 needed for some crates
 WORKDIR /tmp
