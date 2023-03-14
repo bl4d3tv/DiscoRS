@@ -1,6 +1,6 @@
 [package]
 name = "disco-rs"
-version = "1.0.1"
+version = "1.1.0"
 edition = "2021"
 license = "MIT"
 authors = [
@@ -55,3 +55,4 @@ anyhow = "1"
 [profile.release]
 strip = true
 lto = true
+codegen-units = 1
