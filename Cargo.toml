@@ -49,7 +49,7 @@ version = "0.3"
 features = ["serenity-rustls", "builtin-queue", "yt-dlp"]
 
 [build-dependencies]
-vergen = "7"
+vergen = "8"
 anyhow = "1"
 
 [profile.release]
