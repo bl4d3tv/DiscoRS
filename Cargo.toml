@@ -38,6 +38,9 @@ regex = "1"
 # Spotify API
 rspotify = "0.11"
 
+# OpenSSL integration
+openssl = { version = "0.10", features = ["vendored"] }
+
 # Discord API
 [dependencies.serenity]
 version = "0.11"
