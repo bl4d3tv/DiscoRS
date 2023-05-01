@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - ".github/**"
+      - "!.github/workflows/**"
       - "README.md"
       - "LICENSE"
       - ".gitignore"
