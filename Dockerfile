@@ -1,30 +1,64 @@
-FROM rust:1.67 as builder
+FROM rust:1.69-slim as builder
 
 ARG GITHUB_RUN_NUMBER=N/A
+ARG TARGETARCH
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
     TZ=UTC \
     TERM=xterm-256color \
-    CARGO_HOME="/root/.cargo" \
     USER="root" \
-    GITHUB_RUN_NUMBER=${GITHUB_RUN_NUMBER}
+    GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER
 
-RUN mkdir -pv "${CARGO_HOME}" \
-    && rustup set profile minimal
+RUN case $TARGETARCH in \
+    "amd64") echo "x86_64-unknown-linux-gnu" >> /.platform && \
+    echo "" >> /.compiler;; \
+    "arm64") echo "aarch64-unknown-linux-gnu" >> /.platform && \
+	echo "gcc-aarch64-linux-gnu" >> /.compiler;; \
+    esac
 
 RUN apt update && \ 
     apt install -y --no-install-recommends \ 
     libssl-dev \
-    cmake
+    cmake \
+    perl \
+    gcc \
+    libopus0 \
+    opus-tools \
+    libopus-dev \
+    make \
+    git \
+    pkg-config \
+    $(cat /.compiler)
 
-WORKDIR /app
+# Set minimal Rust profile
+RUN rustup set profile minimal && \
+    rustup target add $(cat /.platform)
 
-COPY . .
+# Create dumb project to cache dependencies
+RUN USER=root cargo new --bin /disco-rs
 
-RUN cargo build --release
+WORKDIR /disco-rs
 
-FROM ubuntu:22.04 as runner
+COPY Cargo.toml /disco-rs/
+
+COPY Cargo.lock /disco-rs/
+
+RUN cargo build --target $(cat /.platform) --release
+
+RUN rm src/*.rs && \ 
+    rm target/$(cat /.platform)/release/deps/disco_rs*
+
+COPY . /disco-rs
+
+RUN git config --global --add safe.directory /app
+
+RUN cargo build --target $(cat /.platform) --release
+
+RUN mkdir /app && \
+    cp /disco-rs/target/$(cat /.platform)/release/disco-rs /app 
+
+FROM debian:11-slim as runner
 
 ENV RUST_LOG=none,disco_rs=error
 
@@ -35,7 +69,9 @@ RUN apt update \
     openssl \
     wget \
     ca-certificates \
-    xz-utils
+    xz-utils \
+    opus-tools \
+    libopus0
 
 WORKDIR /tmp
 
@@ -52,16 +88,17 @@ RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && \
 
 # Install missing libssl1 needed for some crates
 
-RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb && \
-    dpkg -i libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb
-
-RUN useradd -m disco
+#RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb && \
+    #dpkg -i libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb
 
 WORKDIR /app
-COPY --chown=disco:disco --from=builder /app/target/release/disco-rs /app/disco-rs
 
-RUN chmod +x /app/disco-rs && chown -R disco:disco /app
+COPY --from=builder /app/disco-rs /app/disco-rs
 
-USER disco
+RUN useradd bot && \
+    chown -R bot:bot /app && \
+    chmod +x /app/disco-rs
+
+USER bot
 
 CMD ["/usr/bin/dumb-init", "/app/disco-rs"]
