@@ -8,7 +8,7 @@ pub async fn info(ctx: Context<'_>) -> Result<(), Error> {
     let version = env!("CARGO_PKG_VERSION");
     let git_hash = env!("VERGEN_GIT_SHA");
     let build_timestamp = env!("VERGEN_BUILD_TIMESTAMP");
-    let build_id = env!("DISCO_GITHUB_RUN_NUMBER");
+    let build_id = env!("GITHUB_RUN_NUMBER");
 
     let footer_icon = String::new();
     ctx.send(|b| {

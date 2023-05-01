@@ -52,7 +52,7 @@ version = "0.3"
 features = ["serenity-rustls", "builtin-queue", "yt-dlp"]
 
 [build-dependencies]
-vergen = "7"
+vergen = { version = "8", features = ["cargo", "build", "gitcl", "git"] }
 anyhow = "1"
 
 [profile.release]
