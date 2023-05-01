@@ -25,7 +25,7 @@ async fn main() -> Result<(), ()> {
 
     info!("Iniciando bot...");
 
-    let token = std::env::var("DISCORD_TOKEN").expect("No token lolo");
+    let token = std::env::var("DISCORD_TOKEN").expect("No token provided");
 
     let intents = serenity_prelude::GatewayIntents::non_privileged();
 
